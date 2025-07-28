@@ -1,4 +1,5 @@
-vocode
-twilio
 fastapi
 uvicorn
+twilio
+vocode
+tiktoken==0.5.1
