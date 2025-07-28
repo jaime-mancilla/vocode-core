@@ -1,3 +1,4 @@
+vocode
+twilio
 fastapi
 uvicorn
-vocode
