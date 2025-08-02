@@ -25,3 +25,6 @@ pyngrok>=5.0.5
 
 # Required internally by vocode for error reporting
 sentry-sdk==1.45.0
+
+# Required by vocode/streaming/action/base_action.py
+jsonschema>=4.0.0
