@@ -15,10 +15,13 @@ python-dotenv>=1.0.0,<1.1.1
 # AI and async tooling
 openai>=0.27.0,<0.28
 aiohttp>=3.8.4,<3.9
-websockets>=10.4,<11.0  # ✔ Fixed range
+websockets>=10.4,<11.0  # ✓ Fixed range
 
 # Tokenizer for text splitting
 tiktoken>=0.4.0,<0.5
 
 # Required for ngrok tunneling
 pyngrok>=5.0.5
+
+# Required internally by vocode for error reporting
+sentry-sdk==1.45.0
