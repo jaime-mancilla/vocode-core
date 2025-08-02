@@ -28,3 +28,6 @@ sentry-sdk==1.45.0
 
 # Required by vocode/streaming/action/base_action.py
 jsonschema>=4.0.0
+
+# Required for async queues
+janus>=1.0.0,<2.0.0
