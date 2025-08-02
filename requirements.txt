@@ -1,10 +1,21 @@
-fastapi>=0.92.0,<0.100.0
-uvicorn==0.22.0
-twilio==8.0.0
+# Core web framework
+fastapi>=0.92,<1.0
+uvicorn>=0.22,<0.23
+
+# Compatible version required by vocode
+twilio==7.17.0  
+
+# Voice + audio engine
 vocode==0.1.83
-loguru==0.7.2
-python-dotenv==1.0.0
-openai==0.27.2
-aiohttp==3.8.4
-websockets==12.0
-tiktoken==0.4.0
+
+# Logging and environment
+loguru>=0.7.0,<0.8
+python-dotenv>=1.0.0,<1.1
+
+# AI and async tooling
+openai>=0.27.0,<0.28
+aiohttp>=3.8.4,<3.9
+websockets>=12.0,<13.0
+
+# Tokenizer for text splitting
+tiktoken>=0.4.0,<0.5
