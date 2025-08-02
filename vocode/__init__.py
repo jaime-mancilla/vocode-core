@@ -3,7 +3,7 @@ from contextvars import ContextVar, Token
 from typing import Any
 from uuid import UUID
 
-# import sentry_sdk
+import sentry_sdk
 from loguru import logger
 
 from vocode.meta import ensure_punkt_installed
