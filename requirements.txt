@@ -13,7 +13,7 @@ loguru>=0.7.0,<0.8
 python-dotenv>=1.0.0,<1.1.1
 
 # AI and async tooling
-openai>=0.27.0,<0.28
+openai==0.27.2
 aiohttp>=3.8.4,<3.9
 websockets>=10.4,<11.0  # ✓ Fixed range
 
