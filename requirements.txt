@@ -1,11 +1,10 @@
 fastapi>=0.92.0,<0.100.0
 uvicorn>=0.22.0
-twilio==6.63.0
+twilio>=8.0.0
 vocode==0.1.83
 loguru==0.7.2
 python-dotenv==1.0.0
-openai>=0.27,<1.0.0
+openai==1.14.3
 aiohttp==3.8.4
 websockets>=12.0.0
 tiktoken==0.4.0
-PyJWT==1.7.1
