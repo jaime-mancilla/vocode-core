@@ -10,7 +10,7 @@ from loguru import logger
 from pyngrok import ngrok
 
 # Local application/library specific imports
-from speller_agent import SpellerAgentFactory
+from apps.telephony_app.speller_agent import SpellerAgentFactory
 
 from vocode.logging import configure_pretty_logging
 from vocode.streaming.models.agent import ChatGPTAgentConfig
