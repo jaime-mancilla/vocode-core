@@ -4,7 +4,7 @@ from typing import Optional
 
 from elevenlabs import Voice, VoiceSettings
 #from elevenlabs.client import AsyncElevenLabs
-from elevenlabs import AsyncElevenLabsS
+from elevenlabs import AsyncElevenLabs
 from loguru import logger
 
 from vocode.streaming.models.audio import AudioEncoding, SamplingRate
