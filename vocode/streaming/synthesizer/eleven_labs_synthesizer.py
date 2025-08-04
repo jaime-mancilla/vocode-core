@@ -162,7 +162,7 @@ class ElevenLabsSynthesizer(BaseSynthesizer[ElevenLabsSynthesizerConfig]):
             if not response.is_success:
                 error = await response.aread()
                 raise ElevenlabsException(
-                    f"ElevenLabs API returned {stream.status_code} status code and the following details: {error.decode('utf-8')}"
+                    f"ElevenLabs API returned {response.status_code} status code and the following details: {error.decode('utf-8')}"
                 )
                 
 #            async for chunk in stream.aiter_bytes(chunk_size):           
