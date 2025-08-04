@@ -2,7 +2,7 @@ from copy import deepcopy
 from typing import Any, AsyncGenerator, Dict, List, Optional, Union
 
 from loguru import logger
-from openai.types.chat.chat_completion_chunk import ChatCompletionChunk
+#from openai.types.chat.chat_completion_chunk import ChatCompletionChunk
 
 from vocode.streaming.agent.token_utils import (
     get_chat_gpt_max_tokens,
@@ -150,7 +150,8 @@ def format_openai_chat_messages_from_transcript(
 
 
 async def openai_get_tokens(
-    gen: AsyncGenerator[ChatCompletionChunk, None],
+    #gen: AsyncGenerator[ChatCompletionChunk, None],
+    gen: AsyncGenerator[Any, None],
 ) -> AsyncGenerator[Union[str, FunctionFragment], None]:
     async for event in gen:
         choices = event.choices
