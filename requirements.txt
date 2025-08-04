@@ -42,5 +42,8 @@ phonenumbers==8.13.25
 # Optional: Claude (Anthropic) support
 anthropic>=0.25,<1.0
 
+# Required for audio decoding/encoding (used by vocode)
+miniaudio>=1.59,<1.60
+
 
 
