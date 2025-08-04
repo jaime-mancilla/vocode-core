@@ -4,7 +4,8 @@ from typing import Optional
 
 from elevenlabs import Voice, VoiceSettings
 #from elevenlabs.client import AsyncElevenLabs
-from elevenlabs import AsyncElevenLabs
+#from elevenlabs import AsyncElevenLabs
+from elevenlabs.client import ElevenLabs
 from loguru import logger
 
 from vocode.streaming.models.audio import AudioEncoding, SamplingRate
@@ -32,7 +33,8 @@ class ElevenLabsSynthesizer(BaseSynthesizer[ElevenLabsSynthesizerConfig]):
         assert synthesizer_config.voice_id is not None, "Voice ID must be set"
         self.api_key = synthesizer_config.api_key
 
-        self.elevenlabs_client = AsyncElevenLabs(
+#        self.elevenlabs_client = AsyncElevenLabs(
+        self.elevenlabs_client = ElevenLabs(
             api_key=self.api_key,
         )
         self.async_requestor = self.elevenlabs_client.async_requestor
@@ -163,8 +165,7 @@ class ElevenLabsSynthesizer(BaseSynthesizer[ElevenLabsSynthesizerConfig]):
                     f"ElevenLabs API returned {stream.status_code} status code and the following details: {error.decode('utf-8')}"
                 )
                 
-#            async for chunk in stream.aiter_bytes(chunk_size):
-            
+#            async for chunk in stream.aiter_bytes(chunk_size):           
             async for chunk in response.aiter_bytes(chunk_size): 
                 if self.upsample:
                     chunk = self._resample_chunk(
