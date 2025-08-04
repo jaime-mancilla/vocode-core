@@ -5,9 +5,12 @@ from typing import Any, AsyncGenerator, Dict, List, Optional, TypeVar, Union
 import sentry_sdk
 from loguru import logger
 # from openai import DEFAULT_MAX_RETRIES as OPENAI_DEFAULT_MAX_RETRIES
-from openai import OpenAI, AzureOpenAI
+#===Legacy Import Structure===
+# from openai import OpenAI, AzureOpenAI
 # from openai import AsyncOpenAI, AsyncAzureOpenAI
-from openai._exceptions import NotFoundError, RateLimitError
+# from openai._exceptions import NotFoundError, RateLimitError
+import openai
+from openai.error import InvalidRequestError, RateLimitError
 
 from vocode import sentry_span_tags
 from vocode.streaming.action.abstract_factory import AbstractActionFactory
@@ -29,26 +32,40 @@ from vocode.utils.sentry_utils import CustomSentrySpans, sentry_create_span
 
 ChatGPTAgentConfigType = TypeVar("ChatGPTAgentConfigType", bound=ChatGPTAgentConfig)
 
-
+#===1.0 Based Client===
+#def instantiate_openai_client(agent_config: ChatGPTAgentConfig, model_fallback: bool = False):
+#    if agent_config.azure_params:
+#        return AsyncAzureOpenAI(
+#            azure_endpoint=agent_config.azure_params.base_url,
+#            api_key=agent_config.azure_params.api_key,
+#            api_version=agent_config.azure_params.api_version,
+#            max_retries=0 if model_fallback else OPENAI_DEFAULT_MAX_RETRIES,
+#        )
+#    else:
+#        if agent_config.openai_api_key is not None:
+#            logger.info("Using OpenAI API key override")
+#        if agent_config.base_url_override is not None:
+#            logger.info(f"Using OpenAI base URL override: {agent_config.base_url_override}")
+#        return AsyncOpenAI(
+#            api_key=agent_config.openai_api_key or os.environ["OPENAI_API_KEY"],
+#            base_url=agent_config.base_url_override or "https://api.openai.com/v1",
+#            max_retries=0 if model_fallback else OPENAI_DEFAULT_MAX_RETRIES,
+#        )
+#===New Instantiate===
 def instantiate_openai_client(agent_config: ChatGPTAgentConfig, model_fallback: bool = False):
-    if agent_config.azure_params:
-        return AsyncAzureOpenAI(
-            azure_endpoint=agent_config.azure_params.base_url,
-            api_key=agent_config.azure_params.api_key,
-            api_version=agent_config.azure_params.api_version,
-            max_retries=0 if model_fallback else OPENAI_DEFAULT_MAX_RETRIES,
-        )
+    if agent_config.openai_api_key:
+        openai.api_key = agent_config.openai_api_key
     else:
-        if agent_config.openai_api_key is not None:
-            logger.info("Using OpenAI API key override")
-        if agent_config.base_url_override is not None:
-            logger.info(f"Using OpenAI base URL override: {agent_config.base_url_override}")
-        return AsyncOpenAI(
-            api_key=agent_config.openai_api_key or os.environ["OPENAI_API_KEY"],
-            base_url=agent_config.base_url_override or "https://api.openai.com/v1",
-            max_retries=0 if model_fallback else OPENAI_DEFAULT_MAX_RETRIES,
-        )
+        openai.api_key = os.environ["OPENAI_API_KEY"]
 
+    if agent_config.base_url_override:
+        openai.api_base = agent_config.base_url_override
+    if agent_config.azure_params:
+        openai.api_type = "azure"
+        openai.api_base = agent_config.azure_params.base_url
+        openai.api_version = agent_config.azure_params.api_version
+        openai.api_key = agent_config.azure_params.api_key
+    return openai
 
 class ChatGPTAgent(RespondAgent[ChatGPTAgentConfigType]):
     openai_client: Union[AsyncOpenAI, AsyncAzureOpenAI]
@@ -145,21 +162,25 @@ class ChatGPTAgent(RespondAgent[ChatGPTAgentConfigType]):
         self, chat_parameters: Dict[str, Any]
     ) -> AsyncGenerator:
         try:
-            stream = await self.openai_client.chat.completions.create(**chat_parameters)
-        except (NotFoundError, RateLimitError) as e:
+            #stream = await self.openai_client.chat.completions.create(**chat_parameters)
+            stream = await openai.ChatCompletion.acreate(**chat_parameters)
+        #except (NotFoundError, RateLimitError) as e:
+        except (InvalidRequestError, RateLimitError) as e:
             logger.error(
                 f"{'Model not found' if isinstance(e, NotFoundError) else 'Rate limit error'} for model_name: {chat_parameters.get('model')}. Applying fallback.",
                 exc_info=True,
             )
             self.apply_model_fallback(chat_parameters)
-            stream = await self.openai_client.chat.completions.create(**chat_parameters)
+            #stream = await self.openai_client.chat.completions.create(**chat_parameters)
+            stream = await openai.ChatCompletion.acreate(**chat_parameters)
         return stream
 
     async def _create_openai_stream(self, chat_parameters: Dict[str, Any]) -> AsyncGenerator:
         if self.agent_config.llm_fallback is not None and self.openai_client.max_retries == 0:
             stream = await self._create_openai_stream_with_fallback(chat_parameters)
         else:
-            stream = await self.openai_client.chat.completions.create(**chat_parameters)
+            #stream = await self.openai_client.chat.completions.create(**chat_parameters)
+            stream = await openai.ChatCompletion.acreate(**chat_parameters)
         return stream
 
     def should_backchannel(self, human_input: str) -> bool:
