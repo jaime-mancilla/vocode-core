@@ -5,7 +5,8 @@ from typing import Any, AsyncGenerator, Dict, List, Optional, TypeVar, Union
 import sentry_sdk
 from loguru import logger
 # from openai import DEFAULT_MAX_RETRIES as OPENAI_DEFAULT_MAX_RETRIES
-from openai import OpenAI, AzureOpenAI
+# from openai import OpenAI, AzureOpenAI
+from openai import AsyncOpenAI, AsyncAzureOpenAI
 from openai._exceptions import NotFoundError, RateLimitError
 
 from vocode import sentry_span_tags
