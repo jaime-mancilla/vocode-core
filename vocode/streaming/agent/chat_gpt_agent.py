@@ -68,7 +68,8 @@ def instantiate_openai_client(agent_config: ChatGPTAgentConfig, model_fallback: 
     return openai
 
 class ChatGPTAgent(RespondAgent[ChatGPTAgentConfigType]):
-    openai_client: Union[AsyncOpenAI, AsyncAzureOpenAI]
+    #openai_client: Union[AsyncOpenAI, AsyncAzureOpenAI]
+    openai_client: Any
 
     def __init__(
         self,
@@ -176,7 +177,8 @@ class ChatGPTAgent(RespondAgent[ChatGPTAgentConfigType]):
         return stream
 
     async def _create_openai_stream(self, chat_parameters: Dict[str, Any]) -> AsyncGenerator:
-        if self.agent_config.llm_fallback is not None and self.openai_client.max_retries == 0:
+        #if self.agent_config.llm_fallback is not None and self.openai_client.max_retries == 0:
+        if self.agent_config.llm_fallback is not None:
             stream = await self._create_openai_stream_with_fallback(chat_parameters)
         else:
             #stream = await self.openai_client.chat.completions.create(**chat_parameters)
