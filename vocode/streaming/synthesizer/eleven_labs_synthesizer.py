@@ -137,23 +137,35 @@ class ElevenLabsSynthesizer(BaseSynthesizer[ElevenLabsSynthesizerConfig]):
         chunk_queue: asyncio.Queue[Optional[bytes]],
     ):
         try:
-            async_client = self.async_requestor.get_client()
-            stream = await async_client.send(
-                async_client.build_request(
-                    "POST",
-                    url,
-                    headers=headers,
-                    json=body,
-                ),
+            response = await self.elevenlabs_client.post(
+                url=url,
+                headers=headers,
+                json=body,
                 stream=True,
             )
+            
+#            async_client = self.async_requestor.get_client()
+#            stream = await async_client.send(
+#                async_client.build_request(
+#                    "POST",
+#                    url,
+#                    headers=headers,
+#                    json=body,
+#                ),
+#                stream=True,
 
-            if not stream.is_success:
-                error = await stream.aread()
+#            if not stream.is_success:
+#               error = await stream.aread()
+            
+            if not response.is_success:
+                error = await response.aread()
                 raise ElevenlabsException(
                     f"ElevenLabs API returned {stream.status_code} status code and the following details: {error.decode('utf-8')}"
                 )
-            async for chunk in stream.aiter_bytes(chunk_size):
+                
+#            async for chunk in stream.aiter_bytes(chunk_size):
+            
+            async for chunk in response.aiter_bytes(chunk_size): 
                 if self.upsample:
                     chunk = self._resample_chunk(
                         chunk,
