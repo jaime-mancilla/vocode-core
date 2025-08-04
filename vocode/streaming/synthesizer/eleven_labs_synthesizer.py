@@ -34,6 +34,7 @@ class ElevenLabsSynthesizer(BaseSynthesizer[ElevenLabsSynthesizerConfig]):
         self.elevenlabs_client = AsyncElevenLabs(
             api_key=self.api_key,
         )
+        self.async_requestor = self.elevenlabs_client.async_requestor
 
         self.voice_id = synthesizer_config.voice_id
         self.stability = synthesizer_config.stability
