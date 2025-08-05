@@ -9,7 +9,7 @@ twilio==7.17.0
 vocode==0.1.83
 
 # Eleven Labs Core Voice
-elevenlabs==0.2.16
+elevenlabs>=1.0.0
 
 # Logging and environment
 loguru>=0.7.0,<0.8
